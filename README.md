@@ -1,35 +1,39 @@
 # Laporan Proyek Machine Learning Terapan 1 - Habib Fabri Arrosyid 
-Domain Proyek
+
+## Domain Proyek
 Harga saham merupakan indikator penting dalam dunia keuangan yang mencerminkan performa perusahaan dan kondisi pasar. Dalam konteks pasar modal Indonesia, PT Bank Mandiri (Persero) Tbk, yang sahamnya diperdagangkan dengan kode BMRI.JK, adalah salah satu bank terbesar di Indonesia. Prediksi harga saham yang akurat dapat membantu investor, trader, dan institusi keuangan dalam pengambilan keputusan investasi, manajemen risiko, dan strategi perdagangan.
 
 Pendekatan tradisional dalam analisis saham, seperti analisis fundamental dan teknikal, sering kali tidak cukup untuk menangkap pola kompleks dalam data harga saham yang bersifat non-linear dan dipengaruhi oleh berbagai faktor, seperti sentimen pasar, kebijakan ekonomi, dan peristiwa global. Oleh karena itu, pendekatan berbasis machine learning, khususnya model Long Short-Term Memory (LSTM), dapat digunakan untuk memodelkan data deret waktu (time series) harga saham, yang memungkinkan prediksi berdasarkan pola historis.
 
 Proyek ini bertujuan untuk membangun model prediktif menggunakan LSTM untuk memprediksi harga penutupan saham BMRI.JK berdasarkan data historis yang diambil dari Yahoo Finance. Dengan memanfaatkan kemampuan LSTM dalam menangkap ketergantungan jangka panjang dalam data deret waktu, proyek ini diharapkan dapat memberikan wawasan yang berguna bagi investor untuk membuat keputusan yang lebih tepat waktu dan informed.
 
-Business Understanding
-Problem Statements
+## Business Understanding
+### Problem Statements
 Berdasarkan latar belakang di atas, permasalahan yang akan dibahas dalam proyek ini adalah:
 
-Bagaimana pola historis harga saham BMRI.JK (Close, High, Low, Open, Volume) dapat digunakan untuk memprediksi harga penutupan di masa depan?
-Seberapa akurat model LSTM dalam memprediksi harga penutupan saham BMRI.JK berdasarkan data historis dari 2015 hingga 2025?
-Faktor apa saja (dari fitur harga dan volume) yang paling berpengaruh dalam memprediksi harga penutupan saham?
-Bagaimana performa model LSTM dibandingkan dengan metrik evaluasi seperti Mean Absolute Error (MAE) dan Mean Squared Error (MSE)?
-Apakah model LSTM dapat digunakan untuk mendukung keputusan investasi jangka pendek atau jangka panjang?
-Goals
+1. Bagaimana pola historis harga saham BMRI.JK (Close, High, Low, Open, Volume) dapat digunakan untuk memprediksi harga penutupan di masa depan?
+2. Seberapa akurat model LSTM dalam memprediksi harga penutupan saham BMRI.JK berdasarkan data historis dari 2015 hingga 2025?
+3. Faktor apa saja (dari fitur harga dan volume) yang paling berpengaruh dalam memprediksi harga penutupan saham?
+4. Bagaimana performa model LSTM dibandingkan dengan metrik evaluasi seperti Mean Absolute Error (MAE) dan Mean Squared Error (MSE)?
+5. Apakah model LSTM dapat digunakan untuk mendukung keputusan investasi jangka pendek atau jangka panjang?
+
+### Goals
 Berdasarkan problem statements, tujuan proyek ini adalah:
 
-Mengidentifikasi pola dan tren dalam data historis harga saham BMRI.JK.
-Membangun model LSTM yang akurat untuk memprediksi harga penutupan saham BMRI.JK.
-Menentukan fitur yang paling berpengaruh terhadap prediksi harga penutupan.
-Mengevaluasi performa model LSTM menggunakan metrik MAE dan MSE.
-Menyediakan wawasan prediktif yang dapat mendukung keputusan investasi.
-Solution Statement
+1. Mengidentifikasi pola dan tren dalam data historis harga saham BMRI.JK.
+2. Membangun model LSTM yang akurat untuk memprediksi harga penutupan saham BMRI.JK.
+3. Menentukan fitur yang paling berpengaruh terhadap prediksi harga penutupan.
+4. Mengevaluasi performa model LSTM menggunakan metrik MAE dan MSE.
+5. Menyediakan wawasan prediktif yang dapat mendukung keputusan investasi.
+
+### Solution Statement
 Melakukan Exploratory Data Analysis (EDA) untuk mengidentifikasi pola, tren, dan korelasi dalam data harga saham BMRI.JK.
 Menggunakan model Long Short-Term Memory (LSTM) untuk memprediksi harga penutupan saham berdasarkan data historis.
 Menggunakan metrik evaluasi seperti Mean Absolute Error (MAE) dan Mean Squared Error (MSE) untuk menilai performa model.
 Melakukan normalisasi data menggunakan MinMaxScaler untuk memastikan data sesuai dengan kebutuhan model LSTM.
 Mengoptimalkan model dengan Early Stopping dan penyesuaian hiperparameter untuk meningkatkan akurasi prediksi.
-Data Understanding
+
+## Data Understanding
 Dataset yang digunakan dalam proyek ini diambil dari Yahoo Finance menggunakan library yfinance dengan kode saham BMRI.JK. Data mencakup periode dari 1 Januari 2015 hingga 25 Mei 2025, berisi informasi harga saham harian yang terdiri dari 2563 baris dan 5 kolom: Close, High, Low, Open, dan Volume. Dataset ini bersifat deret waktu (time series) dan berisi data numerik tanpa nilai kategorikal.
 
 Deskripsi Variabel

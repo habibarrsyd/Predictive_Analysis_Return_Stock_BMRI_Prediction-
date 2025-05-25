@@ -32,9 +32,9 @@ Mengoptimalkan model dengan Early Stopping dan penyesuaian hiperparameter untuk 
 ## Data Understanding
 Dataset yang digunakan dalam proyek ini diambil dari Yahoo Finance menggunakan library yfinance dengan kode saham BMRI.JK. Data mencakup periode dari 1 Januari 2015 hingga 25 Mei 2025, berisi informasi harga saham harian yang terdiri dari 2563 baris dan 5 kolom: Close, High, Low, Open, dan Volume. Dataset ini bersifat deret waktu (time series) dan berisi data numerik tanpa nilai kategorikal.
 #### Tipe Data
-<img src="img/tipe_data_predictiveanalysisi.jpg" align="center"><br>
+<img src="https://github.com/habibarrsyd/Predictive_Analysis_Return_Stock_BMRI_Prediction-/blob/2424506a29e46ba9f56a72f940f261567d855ec5/img/tipe_data_predictiveanalysisi.jpg" align="center"><br>
 #### Bentuk Data
-<img src="img/shape_data_predictiveanalysis.jpg" align="center"><br>
+<img src="https://github.com/habibarrsyd/Predictive_Analysis_Return_Stock_BMRI_Prediction-/blob/2424506a29e46ba9f56a72f940f261567d855ec5/img/shape_data_predictiveanalysis.jpg" align="center"><br>
 
 Deskripsi Variabel
 Dataset memiliki 5 variabel dengan keterangan sebagai berikut:
@@ -50,14 +50,14 @@ Volume  |	Jumlah saham yang diperdagangkan pada hari tersebut.
 
 ### Menangani Missing Value dan Duplicate Data
 Pada tahap ini, dataset diperiksa untuk memastikan tidak ada nilai yang hilang (missing values) Berdasarkan analisis awal:
-<img src="img/null_data_predictiveanalysis.jpg" align="center"><br>
+<img src="https://github.com/habibarrsyd/Predictive_Analysis_Return_Stock_BMRI_Prediction-/blob/2424506a29e46ba9f56a72f940f261567d855ec5/img/null_data_predictiveanalysis.jpg" align="center"><br>
 Tidak ada nilai yang hilang pada dataset (dikonfirmasi dengan data.isnull().sum()).
 Tidak dilakukannya penghapusan nilai duplikat dikarenakan informasinya tetap berguna selama predictive modeling berbasis time series.
 
 ### Visualisasi Data EDA
 
 Visualisasi data dilakukan menggunakan library matplotlib untuk melihat tren harga penutupan:
-<img src="img/graph_data_predictiveanalysis.jpg"><br>
+<img src="https://github.com/habibarrsyd/Predictive_Analysis_Return_Stock_BMRI_Prediction-/blob/2424506a29e46ba9f56a72f940f261567d855ec5/img/graph_data_predictiveanalysis.jpg"><br>
 
 Interpretasi:
 
@@ -78,13 +78,13 @@ Volatilitas memberikan informasi tentang fluktuasi pasar, sehingga model dapat l
 Memberikan informasi tentang persentase kenaikan atau penurunan harga penutupan dari satu hari ke hari berikutnya
 
 Data yang terbentuk : 
-<img src="img/data_after_fenginering_predictiveanalysis.jpg"><br>
+<img src="https://github.com/habibarrsyd/Predictive_Analysis_Return_Stock_BMRI_Prediction-/blob/2424506a29e46ba9f56a72f940f261567d855ec5/img/data_after_fenginering_predictiveanalysis.jpg"><br>
 
 Karena masih terdapat nilai null, maka dilakukan pembersihan nilai null pada data kemudian dilakukan penyederhanaan nama kolom agar mudah diidentifikasikan ketika menjadi fitur <br>
 Penamaan kolom sebelum disederhanakan <br>
-<img src="img/col_befr_predictvieanalyusis.jpg"><br>
+<img src="https://github.com/habibarrsyd/Predictive_Analysis_Return_Stock_BMRI_Prediction-/blob/2424506a29e46ba9f56a72f940f261567d855ec5/img/col_befr_predictvieanalyusis.jpg"><br>
 Penamaan kolom setelah disederhanakan <br>
-<img src="img/col_aftr_predctivalnisis.jpg"><br>
+<img src="https://github.com/habibarrsyd/Predictive_Analysis_Return_Stock_BMRI_Prediction-/blob/2424506a29e46ba9f56a72f940f261567d855ec5/img/col_aftr_predctivalnisis.jpg"><br>
 Sebelum dimasukkan pemodelan dilakukan kembali pemrosesan seperti berikut : 
 ```
 numeric_columns = [
@@ -137,7 +137,7 @@ print("\nContoh data setelah konversi:")
 print(data[boolean_columns].head())
 ```
 Didapatkan hasil sebagai berikut : <br> 
-<img src="img/boolean_predictvanalysis.jpg"><br>
+<img src="https://github.com/habibarrsyd/Predictive_Analysis_Return_Stock_BMRI_Prediction-/blob/2424506a29e46ba9f56a72f940f261567d855ec5/img/boolean_predictvanalysis.jpg"><br>
 
 ## Pemodelan
 Dilakukan pemilihan terhadap fitur dan target sebelum dimodelkan : <br>
@@ -212,7 +212,7 @@ Didapatkan hasil sebagai berikut : <br>
 Mean Absolute Error (MAE): 0.015030
 Mean Squared Error (MSE): 0.000425
 Dengan hasil grafik berikut : <br>
-<img src="img/model1_predictiveanalysis.jpg"><br>
+<img src="https://github.com/habibarrsyd/Predictive_Analysis_Return_Stock_BMRI_Prediction-/blob/2424506a29e46ba9f56a72f940f261567d855ec5/img/model1_predictiveanalysis.jpg"><br>
 Interpretasi : 
 Perbandingan antara Actual Return (biru) dan Predicted Return (oranye) dari model LSTM sebelum tuning, dengan garis prediksi yang tampak kurang selaras dengan data aktual, menunjukkan penyimpangan signifikan terutama pada periode volatilitas tinggi, seperti lonjakan hingga 0.075 atau penurunan hingga -0.10. Model tampaknya gagal menangkap fluktuasi tajam dan cenderung menghasilkan prediksi yang lebih datar atau bias, dengan kesalahan yang mungkin tercermin dalam MAE tinggi (misalnya, >100 IDR) dan MSE besar, mengindikasikan overfitting atau underfitting akibat parameter default yang belum optimal, seperti learning rate tinggi atau epoch yang terbatas.
 
@@ -441,14 +441,7 @@ Didapatkan hasil sebagai berikut :
 <img src="https://github.com/habibarrsyd/Predictive_Analysis_Return_Stock_BMRI_Prediction-/blob/25ff42f3697c21c0c021b5b59523b174d0c86a19/img/prediksi_predictiveanalysis.jpg"><br>
 
 ## Kesimpulan
-Berdasarkan hasil analisis dan pengujian model, kesimpulan dari proyek ini adalah:
-
-Data historis harga saham BMRI.JK menunjukkan tren kenaikan jangka panjang dengan fluktuasi yang signifikan, yang dapat dimodelkan menggunakan LSTM.
-Model LSTM mampu memprediksi harga penutupan saham dengan akurasi yang baik, dengan MAE pada data pengujian sekitar 75.67 IDR, menunjukkan bahwa prediksi cukup dekat dengan nilai aktual.
-Fitur harga penutupan (Close) sebagai input utama sudah cukup untuk menghasilkan prediksi yang akurat, tetapi penambahan fitur lain seperti Volume atau indikator teknikal dapat dipertimbangkan untuk meningkatkan performa.
-Metrik evaluasi MAE dan MSE menunjukkan bahwa model lebih akurat pada data pelatihan dibandingkan data pengujian, yang wajar karena data pengujian mencerminkan kondisi pasar yang belum pernah dilihat model.
-Model LSTM dapat digunakan untuk mendukung keputusan investasi jangka pendek, tetapi untuk jangka panjang, perlu mempertimbangkan faktor eksternal seperti kebijakan ekonomi dan sentimen pasar.
-Untuk meningkatkan performa model, dapat dilakukan eksperimen dengan penambahan fitur (misalnya, indikator teknikal seperti RSI atau MACD), penyesuaian hiperparameter, atau penggunaan model ensemble.
+Berdasarkan analisis dan pengujian model, kesimpulan dari proyek ini adalah sebagai berikut: Data historis harga saham BMRI.JK dari 2015 hingga 25 Mei 2025 menunjukkan tren kenaikan jangka panjang dengan fluktuasi signifikan, yang efektif dimodelkan menggunakan LSTM. Model LSTM yang telah dioptimalkan dengan tuning hiperparameter (unit 100, dropout 0.4, learning rate 0.001, batch size 16) mencapai performa lebih baik dengan MAE sekitar 0.015030 (sebelum tuning) dan penurunan lebih lanjut pasca-tuning, menunjukkan akurasi yang memadai dalam memprediksi return harian, meskipun masih ada penyimpangan pada volatilitas ekstrem. Fitur seperti MA7, MA30, RSI, Volatilitas, dan IHSG_Close berkontribusi pada prediksi, dengan Return sebagai target utama, namun model lebih akurat pada data pelatihan dibandingkan pengujian, mencerminkan tantangan dalam generalisasi ke data baru. Untuk keputusan investasi, model mendukung strategi jangka pendek berdasarkan prediksi 10 hari ke depan yang menunjukkan penurunan return dari 0.0018% (Hari 1) ke 0.0012% (Hari 10), menyarankan kehati-hatian terhadap tren menurun; namun, untuk jangka panjang, model kurang optimal tanpa integrasi faktor eksternal seperti kebijakan ekonomi atau sentimen pasar. Untuk meningkatkan performa, disarankan menambahkan data eksternal (misalnya, berita pasar) atau menggunakan model ensemble untuk menangani volatilitas tinggi, serta melanjutkan tuning dengan eksperimen pada time step yang lebih panjang.
 
 ## Referensi
 - Brownlee, J. (2020). Deep Learning for Time Series Forecasting. Machine Learning Mastery. Diakses pada 25 Mei 2025 dari https://machinelearningmastery.com/deep-learning-for-time-series-forecasting/.

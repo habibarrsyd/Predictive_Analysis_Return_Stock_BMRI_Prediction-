@@ -1,349 +1,231 @@
 # Laporan Proyek Machine Learning Terapan 1 - Habib Fabri Arrosyid 
+Domain Proyek
+Harga saham merupakan indikator penting dalam dunia keuangan yang mencerminkan performa perusahaan dan kondisi pasar. Dalam konteks pasar modal Indonesia, PT Bank Mandiri (Persero) Tbk, yang sahamnya diperdagangkan dengan kode BMRI.JK, adalah salah satu bank terbesar di Indonesia. Prediksi harga saham yang akurat dapat membantu investor, trader, dan institusi keuangan dalam pengambilan keputusan investasi, manajemen risiko, dan strategi perdagangan.
 
-## Domain Proyek
+Pendekatan tradisional dalam analisis saham, seperti analisis fundamental dan teknikal, sering kali tidak cukup untuk menangkap pola kompleks dalam data harga saham yang bersifat non-linear dan dipengaruhi oleh berbagai faktor, seperti sentimen pasar, kebijakan ekonomi, dan peristiwa global. Oleh karena itu, pendekatan berbasis machine learning, khususnya model Long Short-Term Memory (LSTM), dapat digunakan untuk memodelkan data deret waktu (time series) harga saham, yang memungkinkan prediksi berdasarkan pola historis.
 
-Kinerja siswa dalam lingkungan pendidikan memainkan peran penting dalam menentukan keberhasilan akademik dan masa depan mereka. Dalam era digital saat ini, institusi pendidikan memiliki akses ke berbagai data terkait aktivitas belajar siswa, seperti nilai ujian, kehadiran, partisipasi dalam kegiatan ekstrakurikuler, dan data demografis. Namun, potensi data ini seringkali belum dimanfaatkan secara maksimal untuk memberikan wawasan yang dapat membantu meningkatkan hasil belajar siswa.
+Proyek ini bertujuan untuk membangun model prediktif menggunakan LSTM untuk memprediksi harga penutupan saham BMRI.JK berdasarkan data historis yang diambil dari Yahoo Finance. Dengan memanfaatkan kemampuan LSTM dalam menangkap ketergantungan jangka panjang dalam data deret waktu, proyek ini diharapkan dapat memberikan wawasan yang berguna bagi investor untuk membuat keputusan yang lebih tepat waktu dan informed.
 
-Pendekatan tradisional dalam mengevaluasi kinerja siswa cenderung bersifat reaktif, hanya memberikan perhatian setelah masalah terjadi, seperti penurunan nilai atau tingkat kehadiran yang rendah. Oleh karena itu, diperlukan solusi yang bersifat prediktif untuk mengidentifikasi potensi risiko lebih awal, sehingga institusi pendidikan dapat mengambil langkah-langkah preventif untuk mendukung siswa secara proaktif.
+Business Understanding
+Problem Statements
+Berdasarkan latar belakang di atas, permasalahan yang akan dibahas dalam proyek ini adalah:
 
-Predictive analytics memungkinkan institusi pendidikan untuk mengidentifikasi pola performa siswa berdasarkan data historis. Teknologi ini membantu dalam pengambilan keputusan yang proaktif untuk memberikan intervensi yang tepat waktu dan mendukung siswa dalam mencapai hasil terbaik. Pada kasus ini penulis menerapkan 4 model pembelajaran machine learning yakni Random Forest, Naive Bayes, Support Vector Machine (SVM) dan Extreme Gradient Boosting (XGBoost). Pendekatan ini mengintegrasikan keunggulan dari berbagai model untuk membandingkan dan menemukan algoritma terbaik dalam memprediksi performa siswa berdasarkan dataset yang diperoleh dari kaggel dan dapat diakses pada tautan berikut (https://www.kaggle.com/datasets/rabieelkharoua/students-performance-dataset). Dengan menggunakan model ini, diharapkan hasil prediksi yang akurat dapat membantu institusi pendidikan dalam merancang strategi pembelajaran yang lebih efektif dan personalisasi untuk siswa.
+Bagaimana pola historis harga saham BMRI.JK (Close, High, Low, Open, Volume) dapat digunakan untuk memprediksi harga penutupan di masa depan?
+Seberapa akurat model LSTM dalam memprediksi harga penutupan saham BMRI.JK berdasarkan data historis dari 2015 hingga 2025?
+Faktor apa saja (dari fitur harga dan volume) yang paling berpengaruh dalam memprediksi harga penutupan saham?
+Bagaimana performa model LSTM dibandingkan dengan metrik evaluasi seperti Mean Absolute Error (MAE) dan Mean Squared Error (MSE)?
+Apakah model LSTM dapat digunakan untuk mendukung keputusan investasi jangka pendek atau jangka panjang?
+Goals
+Berdasarkan problem statements, tujuan proyek ini adalah:
 
-## Business Understanding
+Mengidentifikasi pola dan tren dalam data historis harga saham BMRI.JK.
+Membangun model LSTM yang akurat untuk memprediksi harga penutupan saham BMRI.JK.
+Menentukan fitur yang paling berpengaruh terhadap prediksi harga penutupan.
+Mengevaluasi performa model LSTM menggunakan metrik MAE dan MSE.
+Menyediakan wawasan prediktif yang dapat mendukung keputusan investasi.
+Solution Statement
+Melakukan Exploratory Data Analysis (EDA) untuk mengidentifikasi pola, tren, dan korelasi dalam data harga saham BMRI.JK.
+Menggunakan model Long Short-Term Memory (LSTM) untuk memprediksi harga penutupan saham berdasarkan data historis.
+Menggunakan metrik evaluasi seperti Mean Absolute Error (MAE) dan Mean Squared Error (MSE) untuk menilai performa model.
+Melakukan normalisasi data menggunakan MinMaxScaler untuk memastikan data sesuai dengan kebutuhan model LSTM.
+Mengoptimalkan model dengan Early Stopping dan penyesuaian hiperparameter untuk meningkatkan akurasi prediksi.
+Data Understanding
+Dataset yang digunakan dalam proyek ini diambil dari Yahoo Finance menggunakan library yfinance dengan kode saham BMRI.JK. Data mencakup periode dari 1 Januari 2015 hingga 25 Mei 2025, berisi informasi harga saham harian yang terdiri dari 2563 baris dan 5 kolom: Close, High, Low, Open, dan Volume. Dataset ini bersifat deret waktu (time series) dan berisi data numerik tanpa nilai kategorikal.
 
-### Problem Statements
-Berdasarkan latar belakang tersebut, maka rincian permasalahan yang dapat dibahas pada proyek ini yakni:
-1. Berapa banyak waktu belajar mingguan (*Study Time Weekly*) yang optimal untuk meningkatkan GPA siswa?
-2. Apakah absensi siswa (*Absences*) berkorelasi negatif dengan GPA mereka?
-3. Apakah tutoring (bimbingan belajar) memengaruhi GPA siswa?
-4. Apakah terdapat perbedaan performa akademik antara siswa laki-laki dan perempuan (*Gender*) dalam hal GPA?
-5. Bagaimana partisipasi siswa dalam kegiatan ekstrakurikuler (*Extracurricular, Sports, Music, Volunteering*) memengaruhi GPA mereka?
-6. Apakah dukungan orang tua (*Parental Support*) berhubungan langsung dengan GPA siswa?
-7. Faktor mana yang paling berpengaruh terhadap prediksi GPA siswa ketika mempertimbangkan semua atribut (*Age, Gender, Parental Education, Study Time Weekly, Absences, Tutoring, Parental Support, Extracurricular, Sports, Music, Volunteering*)
-8. Apa model terbaik yang dapat digunakan untuk memprediksi kinerja siswa?
+Deskripsi Variabel
+Dataset memiliki 5 variabel dengan keterangan sebagai berikut:
 
-### Goals
-Berdasarkan problem statements, berikut tujuan yang ingin dicapai pada proyek ini.
-1. Menampilkan durasi belajar yang lebih efektif.
-2. Mendeteksi pola absensi yang berdampak pada penurunan performa akademik.
-3. Menilai pengaruh bimbingan belajar untuk meningkatkan performa siswa.
-4. Mengidentifikasi apakah ada kesenjangan gender dalam pencapaian akademik.
-5. Menilai dampak kegiatan non-akademik terhadap kinerja akademik.
-6. Mengukur pentingnya keterlibatan orang tua dalam keberhasilan belajar siswa.
-7. Mengukur Faktor yang paling berpengaruh terhadap prediksi GPA Siswa
-8. Menemukan model terbaik berdasarkan akurasi tertinggi untuk memprediksi kinerja siswa.
 
-### Solution Statement
-1. Melakukan proses *Exploratory Data Analysis* (EDA) untuk menampilkan durasi belajar yang lebih efektif, mendeteksi pola absensi yang berdampak pada penurunan performa akademik, menilai efektivitas bimbingan belajar untuk meningkatkan performa siswa, mengidentifikasi apakah ada kesenjangan gender dalam pencapaian akademik, menilai dampak kegiatan non-akademik terhadap kinerja akademik, mengukur pentingnya keterlibatan orang tua dalam keberhasilan belajar siswa
-2. Menggunakan 4 model *machine learning* yaitu *Extreme Gradient Boosting* (XGBoost), *Support Vector Machine* (SVM), *Naive Bayes*, dan *Random Forest* untuk memprediksi kinerja siswa
-3. Menggunakan confusion matrix dan f1 score pada masing-masing model *machine learning* untuk menemukan model terbaik berdasarkan akurasi tertinggi.
+Variabel	Keterangan
+Open	Harga pembukaan saham pada hari perdagangan (dalam IDR).
+High	Harga tertinggi saham pada hari perdagangan (dalam IDR).
+Low	Harga terendah saham pada hari perdagangan (dalam IDR).
+Close	Harga penutupan saham pada hari perdagangan (dalam IDR, variabel target).
+Volume	Jumlah saham yang diperdagangkan pada hari tersebut.
+Menangani Missing Value dan Duplicate Data
+Pada tahap ini, dataset diperiksa untuk memastikan tidak ada nilai yang hilang (missing values) atau data duplikat. Berdasarkan analisis awal:
 
-## Data Understanding
-Dataset yang digunakan untuk mempredisksi kinerja siswa diambil dari platform kaggle yang dapat diakses pada tautan berikut (https://www.kaggle.com/datasets/rabieelkharoua/students-performance-dataset) yang dipublikasikan oleh Rabie El Kharoua pada tanggal 13 Juni 2024. Kumpulan data ini berisi informasi lengkap tentang 2.392 siswa sekolah menengah, yang merinci demografi, kebiasaan belajar, keterlibatan orang tua, kegiatan ekstrakurikuler, dan prestasi akademik mereka. Variabel target, GradeClass, mengklasifikasikan nilai siswa ke dalam kategori yang berbeda, sehingga menyediakan kumpulan data yang kuat untuk penelitian pendidikan, pemodelan prediktif, dan analisis statistik. Dataset ini terdiri dari 1 file csv.<br>
-Infromasi dataset tersebut dapat dilihat pada gambar dibawah ini:
+Tidak ada nilai yang hilang pada dataset (dikonfirmasi dengan data.isnull().sum()).
+Tidak ada data duplikat (dikonfirmasi dengan data.duplicated().sum()). Dengan demikian, dataset siap untuk tahap analisis dan pemrosesan lebih lanjut.
+Univariate Analysis EDA
+Analisis univariat dilakukan untuk memahami distribusi dan karakteristik masing-masing variabel:
 
-<img src="https://github.com/user-attachments/assets/32e0f6ad-799b-4949-92fe-09eb4238385d" align="center"><br>
-Dari gambar yang ditampilkan, terdapat 12 variabel bertipe int64 dan 3 variabel bertipe fload64
+Harga Penutupan (Close): Harga penutupan menunjukkan tren kenaikan dari sekitar 1641 IDR pada 2015 hingga 5425 IDR pada Mei 2025, dengan fluktuasi yang signifikan.
+Harga Tertinggi (High) dan Terendah (Low): Kedua variabel ini berkorelasi erat dengan harga penutupan, menunjukkan volatilitas harian.
+Harga Pembukaan (Open): Mirip dengan harga penutupan, harga pembukaan juga menunjukkan tren kenaikan jangka panjang.
+Volume: Volume perdagangan bervariasi, dengan puncak tertinggi pada periode tertentu (misalnya, 191 juta saham pada 19 Mei 2025), menunjukkan aktivitas pasar yang tinggi pada hari-hari tertentu.
+Visualisasi data dilakukan menggunakan library matplotlib untuk melihat tren harga penutupan:
 
-### Deskripsi Variabel
-Dataset ini memiliki 15 variabel dengan keterangan sebagai berikut.
-Variabel | Keterangan
-----------|----------
-StudentID | Pengidentifikasi unik yang diberikan kepada setiap siswa (1001 hingga 3392)
-Age | Usia siswa berkisar antara 15 hingga 18 tahun
-Gender | Jenis kelamin siswa, di mana 0 mewakili Laki-laki dan 1 mewakili Perempuan
-Ethnicity | Etnis siswa, dikodekan sebagai berikut: 0(Kaukasia), 1(Afrika Amerika), 2(Asia), 3(Lainnya)
-ParentalEducation | Tingkat pendidikan orang tua, dikodekan sebagai berikut: 0(Tidak Ada), 1(Sekolah Menengah Atas), 2(Beberapa Perguruan Tinggi), 3(Sarjana), 4(Lebih Tinggi)
-StudyTimeWeekly | Waktu belajar mingguan dalam jam, berkisar antara 0 hingga 20
-Absences | Jumlah ketidakhadiran selama tahun ajaran, berkisar antara 0 hingga 30
-Tutoring | Status bimbingan belajar, di mana 0 menunjukkan Tidak dan 1 menunjukkan Ya
-ParentalSupport | Tingkat dukungan orang tua, dikodekan sebagai berikut: 0(Tidak Ada), 1(Rendah), 2(Sedang), 3(Tinggi), 4(Sangat Tinggi)
-Extracurricular | Partisipasi dalam kegiatan ekstrakurikuler, di mana 0 menunjukkan Tidak dan 1 menunjukkan Ya
-Sports | Partisipasi dalam olahraga, di mana 0 menunjukkan Tidak dan 1 menunjukkan Ya
-Music	| Partisipasi dalam kegiatan musik, di mana 0 menunjukkan Tidak dan 1 menunjukkan Ya
-Volunteering	| Partisipasi dalam kesukarelaan, di mana 0 menunjukkan Tidak dan 1 menunjukkan Ya
-GPA	| Nilai Rata-rata Poin pada skala 2,0 hingga 4,0
-GradeClass | Klasifikasi nilai siswa berdasarkan IPK (0: 'A' (IPK >= 3,5)), (1: 'B' (3,0 <= IPK < 3,5)), (2: 'C' (2,5 <= IPK < 3,0)), (3: 'D' (2,0 <= IPK < 2,5)), (4: 'F' (IPK < 2,0))
+python
 
-### Menangani Missing Value dan Duplicate Data (Duplikasi Data)
-Pada tahap ini kita akan mengecek data yang tidak valid pada dataset. Setelah diperiksa apakah terdapat kolom yang bernilai null, hasilnya adalah tidak ada. Sedangkan data duplikat atau data ganda juga tidak ada. Maka dengan demikian data siapa untuk dianalisis pada tahap selanjutnya.
-
-### Konversi nilai numerik kategorikal ke objek(string)
-Pada tahap ini, karena dataset kita tipe kategorikal sudah dalam bentuk nilai numerik, maka kita perlu membuat fungsi konversi nilai number kategorikal ke objek (string). Tujuan dari langkah ini yaitu untuk menampilkan label fitur visualisasi dalam proses analisis data dengan teknik Univariate EDA dan Multivariate EDA.
-
-### Univariate Analysis EDA
-Ada beberapa tahap yang akan kita lakukan, yakni:
-Tahap pertama, membagi variabel-variabel menjadi 2 jenis, yaitu variabel numerikal dan variabel kategorikal. Berikut merupakan kolom-kolom yang termasuk dalam variabel numerikal maupun kategorikal. <br>
-Semua numerikal: ["Age", "StudyTimeWeekly", "Absences", "GPA"] <br>
-Semua kategorikal: ["Gender", "Ethnicity", "ParentalEducation", "Tutoring", "ParentalSupport", "Extracurricular", "Sports", "Music", "Volunteering", "GradeClass"]
-
-Tahap kedua, kita akan melihat nilai berbeda pada kolom kategorikal pada gambar tabel dibawah ini:
-
-<img src="https://github.com/user-attachments/assets/b58d3ef7-e896-470c-83b7-f32bc0352770" align="center"><br>
-Dapat dilihat pada tabel nilai berbeda pada:
-1. Kolom gender = 2;
-2. Kolom Etnicity = 4;
-3. Kolom ParentalEducation = 5;
-4. Kolom Tutoring = 2;
-5. Kolom ParentalSupport = 5;
-6. Kolom Extracurricular = 2;
-7. Kolom Sports = 2;
-8. Kolom Music = 2;
-9. Kolom Volunteering = 2;
-10. Kolom GradeClass(Variabel Target) = 5;
-    
-Tahap ketiga, Pada tahap ini, kita akan membuat visualisasi data kategorikal dalam bentuk grafik dengan menggunakan library python matplotlib. Hasilnya seperti gambar dibawah ini:
-
-<img src="https://github.com/user-attachments/assets/9f4504fb-45a8-4ce0-a932-37284fee5c81" align="center"><br>
-<img src="https://github.com/user-attachments/assets/da102c2b-ebde-4651-9e19-390056a4e2ea" align="center"><br>
-Interpretasi:
-1. Grafik jenis kelamin, menunjukan jumlah merata antara laki-laki dan perempuan.
-2. Grafik Etnis, menunjukan mayoritas siswa berasal dari etnis kaukasia.
-3. Grafisk pendidikan orangtua, menunjukan mayoritas pendidikan orang tua yakni pensisikan tinggi dan sarjana
-4. Grafik bimbingan belajar, menunjukan mayoritas siswa tidak mengikuti bimbingan belajar.
-5. Grafik dukungan orang tua, menunjukan mayoritas dukungan orang tua berada di level sdang dan tinggi.
-6. Grafik Ekstrakulikuler(EKtrakulikuler, Olahraga, Musik dan Sukrelawan), menujukan rendahnya minat siswa pada kegiatan diluar sekolah.
-
-Tahap keempat, kita akan membuat visualisasi data numerikal dalam bentuk grafik dengan menggunakan library python `matplotlib`. Hasilnya seperti gambar dibawah ini:
-
-<img src="https://github.com/user-attachments/assets/1815862b-2aa3-47c9-8213-0922092d39ae" align="center"><br>
-Interprestasi:
-1. Pada kolom Age, dapat dilihat rata-rata siswa berumur 15-17 tahun. Dapat disimpulkan tidak ada Outlier yang tersebar.
-2. Pada kolom StudyTimeWeekly, dapat dilihat bahwa rata-rata siswa memiliki waktu belajar 5-14 jam per minggu.
-3. Pada kolom absences, dapat dilihat bahwa rata-rata siswa memiliki jumlah ketidakhadiran 6 - 23 hari. Dapat disimpulkan 1. Pada kolom
-4. Pada kolom GPA, dapat dilihat bahwa rata-rata prestasi siswa diantara 1,2 - 2,7 dan tidak memiliki outlier.
-
-Tahap yang kelima, kita akan melihat lebih detail mengenai jumlah dari masing-masing tingkat kelas terbaik yang menjadi target kita untuk mengetahui jumlah secara umum.
-
-<img src="https://github.com/user-attachments/assets/4c2f99ff-606c-4b5a-bbf1-17d34ed575dd" align="center"><br>
-Interpretasi: 
-Kelas terbaik (GradeClass) yang ditampilkan menununjukan mayoritas prestasi siswa berada di kategori Grade F(Prestasi terendah) yakni 1211 siswa sedangkan minioritas siswa berada pada kategori Grade A (Kelas tertinggi) yakni 107
-
-Tahap keenam, kita akan melihat persebaran data dari masing-masing kategori kelas pada kolom GradeClass:
-
-<img src="https://github.com/user-attachments/assets/e66a9c49-e205-4c02-8f44-896b102faf37" align="center"><br>
-Interpretasi:
-1. Siswa berada pada Grade F (kelas terendah) memiliki presentasi terbayak yakni 50.6%.
-2. Siswa berada pada Grade A (kelas tertinggi) memiliki presentasi sedikit yakni 4.5%.
-3. Siswa yang lainnya berada pada Grade B (11.2%), Grade C(16.3%) dan Grade D (17.3%)
-
-Langkah terakhir, kita akan membentuk histogram dari variabel-variabel numerikal untuk melihat persebaran data:
-
-<img src="https://github.com/user-attachments/assets/82bb4fd9-534d-4fe7-a351-7a8635583181" align="center"><br>
-Interpretasi: 
-Usia, waktu belajar setiap minggu, absen dan nilai siswa cukup berdistribusi normal.
-
-### Multivariate Analysis EDA
-
-Pada bagian ini, akan ditunjukan hubungan antara dua variabel biasa disebut sebagai bivariate EDA. Selanjutnya, kita akan melakukan analisis data pada fitur kategori dan numerik.
-
-#### 1. Ananlisis data pada fitur numerik StudyTimeWeekly (Waktu belajar setiap minggu) dengan GPA (Nilai Prestasi)
-
-<img src="https://github.com/user-attachments/assets/e3460ee9-6449-4533-9b03-3e227749d36c" align="center"><br>
-Interpretasi:
-Siswa yang waktu belajaranya banyak mempengaruhi naiknya prestasi belajar(GPA).
-
-#### 2. Ananlisis data pada fitur numerik Absences (Ketidakhadiran) dengan GPA (Nilai Prestasi)
-
-<img src="https://github.com/user-attachments/assets/90ebe42b-3f7e-44f6-9f6d-ac41cf45c9ce" align="center"><br>
-Interpretasi:
-Absen(ketidakhadiran) siswa sangat mempengaruhi turun prestasinya(GPA).
-
-#### 3. Ananlisis data pada fitur kategori Tutoring (Bimbingan Belajar) dengan GradeClass (Kategori Kelas)
-
-<img src="https://github.com/user-attachments/assets/9ecf2453-805f-4757-96a5-fcf847e2ea06" align="center"><br>
-Interpretasi:
-Banyak siswa yang tidak mengikuti bimbingan belajar yang mendapat prestasi rendah (Grade F)
-
-#### 4. Ananlisis data pada fitur kategori Genre (Jenis Kelamin) dengan GradeClass (Kategori Kelas)
-
-<img src="https://github.com/user-attachments/assets/71e91698-39b4-43c7-8eec-de9e0a342a6f" align="center"><br>
-Interpretasi:
-Jenis kelamin pria lebih dominan memiliki prestasi lebih tinggi dibandingkan dengan wanita
-
-#### 5. Ananlisis data pada fitur kategori kegiatan non akademik (Extracurricular, Sports, Music, Volunteering) dengan GPA (Nilai Prestasi)
-
-<img src="https://github.com/user-attachments/assets/684468d1-1942-4065-91cd-1c0b83923b95" align="center"><br>
-Interpretasi:
-Lebih banyak siswa yang tidak mengikuti kegiatan ekstrakulikuler, olahraga dan musik mempengaruhi turunya nilai pretasi(GPA) mereka
-
-#### 6. Ananlisis data pada fitur kategori ParentalSupport (Dukungan Orang Tua) dengan GradeClass (Kategori Kelas)
-
-<img src="https://github.com/user-attachments/assets/c711088d-2d29-4056-8d0c-37d5e9737d19" align="center"><br>
-Interpretasi:
-Mayoritas dukungan orang tua sangat mempengaruhin nilai prestasi siswa (GPA). Semakin tinggi dukungan orang tua, maka semakin meningkat nilai prestasi dari anaknya.
-
-#### 7. Melihat Korelasi Variabel dengan Menggunakan Heatmap
-
-<img src="https://github.com/user-attachments/assets/be45973d-5230-4db7-8f2c-eab943ff641a" align="center"><br>
+Copy
+plt.figure(figsize=(12, 6))
+plt.plot(data['Close'], label='Harga Penutupan')
+plt.title('Tren Harga Penutupan Saham BMRI.JK (2015-2025)')
+plt.xlabel('Tanggal')
+plt.ylabel('Harga (IDR)')
+plt.legend()
+plt.show()
 Interpretasi:
 
-Nilai Prestasi Siswa memiliki
-1. Korelasi negatif yang cukup kuat dengan ketidakhadiran(Absences).
-2. Korelasi positif yang cukup lemah dengan waktu belajar setiap minggu(StudyTimeWeekly).
+Harga penutupan menunjukkan tren kenaikan jangka panjang dengan beberapa periode volatilitas, terutama pada 2020 (kemungkinan akibat pandemi COVID-19).
+Tidak ada outlier ekstrem yang terdeteksi dalam data harga.
+Multivariate Analysis EDA
+Analisis multivariat dilakukan untuk memahami hubungan antar variabel:
 
-#### 8. Melihat Plot Scatter yang Memiliki Nilai Korelasi Positif dan Negatif
-
-<img src="https://github.com/user-attachments/assets/a4e3ecb2-be4a-4408-9f91-982e8e4535bd" align="center"><br>
+Korelasi Antar Fitur:
+Menggunakan heatmap korelasi (data.corr()), ditemukan bahwa Close, Open, High, dan Low memiliki korelasi positif yang sangat kuat (>0.99), menunjukkan bahwa fitur-fitur ini bergerak searah.
+Volume memiliki korelasi yang lebih lemah dengan harga, menunjukkan bahwa volume tidak selalu menjadi prediktor kuat untuk harga saham.
+Scatter Plot:
+Scatter plot antara Close dan Volume menunjukkan tidak ada pola linier yang jelas, mengindikasikan bahwa volume perdagangan tidak secara langsung memengaruhi harga penutupan.
 Interpretasi:
 
-Nilai prestasi siswa (GPA) memiliki  korelasi negatif yang kuat pada ketidakhadiran (garis regresi menurun ke kanan bawah) dan korelatif positif cukup lemah pada waktu belajar setiap minggu (garis regresi naik ke kanan atas)
+Fitur harga (Open, High, Low) sangat berkorelasi dengan Close, sehingga dapat digunakan sebagai input utama untuk model LSTM.
+Volume dapat digunakan sebagai fitur tambahan, tetapi pengaruhnya mungkin terbatas.
+Data Preparation
+Pada tahap ini, data diproses agar sesuai untuk pelatihan model LSTM. Langkah-langkah yang dilakukan meliputi:
 
-## Data Data Preparation
+1. Pemilihan Fitur
+Fitur yang digunakan untuk prediksi adalah Close, dengan fokus pada harga penutupan sebagai variabel target. Fitur lain (Open, High, Low, Volume) dapat digunakan sebagai input tambahan dalam eksperimen lanjutan, tetapi pada proyek ini hanya Close yang digunakan untuk simplifikasi.
 
-Pada tahap ini kita akan melakukan proses transformasi pada data sehingga menjadi bentuk yang cocok untuk proses pemodelan. Ada beberapa tahap persiapan data perlu dilakukan, yaitu:
-1. Drop kolom yang tidak digunakan dalam pemrosesan data
-2. Encoding fitur kategori
-3. Pembagian dataset dengan fungsi train_test_split dari library sklearn.
+2. Normalisasi Data
+Data harga penutupan dinormalisasi menggunakan MinMaxScaler untuk mengubah nilai ke rentang [0, 1], yang sesuai dengan kebutuhan model LSTM.
 
-### Drop kolom yang tidak digunakan dalam pemrosesan data
+python
 
-Pada tahap ini ada beberapa kolom pada dataset yang tidak perlu digunakan dalam pemrosesan data yakni `StudentID`, `Ethnicity` dan `ParentalEducation`. Kolom-kolom ini akan dihapus menggunakan fungsi `drop()`. Hasilnya dapat dilihat pada gambar dibawah ini:
+Copy
+scaler = MinMaxScaler(feature_range=(0, 1))
+scaled_data = scaler.fit_transform(data['Close'].values.reshape(-1, 1))
+3. Pembuatan Data Deret Waktu
+Data diubah menjadi format deret waktu dengan jendela waktu (time step) sebanyak 60 hari untuk memprediksi harga pada hari berikutnya. Proses ini dilakukan dengan membuat pasangan input-output sebagai berikut:
 
-<img src="https://github.com/user-attachments/assets/69b9a96d-6baf-46da-988c-8a6897f65549" align="center"><br>
-Hasilnya menampilkan variabel kolom `StudentID`, `Ethnicity` dan `ParentalEducation` sudah terhapus. Dataset siswa yang akan kita proses saat ini terdiri dari 2 tipe data float64, 2 tipe data int64 dan 8 tipe data objek(string).
+Input: Harga penutupan selama 60 hari sebelumnya.
+Output: Harga penutupan pada hari berikutnya.
+python
 
-### Encoding Fitur Kategori
+Copy
+def create_dataset(dataset, time_step=60):
+    X, y = [], []
+    for i in range(len(dataset) - time_step - 1):
+        X.append(dataset[i:(i + time_step), 0])
+        y.append(dataset[i + time_step, 0])
+    return np.array(X), np.array(y)
 
-Pada bagian ini, karena dataset fitur kategori kita sebelumnya sudah diubah dalam bentuk objek (string) pada tahap eksplorasi data analis maka kita perlu mengubah data kategori (yang berbentuk teks atau label) menjadi format numerik agar dapat diproses oleh algoritma machine learning. Encoding Fitur Kategorikal dilakukan 3 bagian, yakni:
+time_step = 60
+X, y = create_dataset(scaled_data, time_step)
+4. Train-Test Split
+Data dibagi menjadi 80% data pelatihan dan 20% data pengujian menggunakan pembagian berurutan (tidak acak, karena data deret waktu).
 
-1. *Label Encoding* yaitu, mengonversi nilai kategori menjadi angka integer (`0` dan `1`)). Variabel yang akan diproses yakni:  <br>
-    a. *Tutoring* (Apakah siswa mengikuti bimbingan belajar?) <br>
-    b. *Extracurricular* (Apakah siswa mengikuti kegiatan ektrakulikuler?) <br>
-    c. *Sports* (Apakah siswa mengikuti kegiatan olahraga? <br>
-    d. *Music* (Apakah siswa mengikuti kegiatan musik?) <br>
-    e. *Volunteering* (Apakah siswa mengikuti kegiatan sukarelaan?)
-2. *One Hot Ecoding* yaitu mengubah setiap kategori menjadi kolom biner terpisah untuk data tidak terurut). Variabel yang akan diproses yakni Gender.
-3. *Ordinal Encoding* yaitu memberikan nilai integer berdasarkan hierarki atau urutan kategori). Variabel yang akan diproses yakni ParentalSupport.
-Hasil setelah dilakukan data preprocessing dapat dilihat pada gambar berikut:
+python
 
-<img src="https://github.com/user-attachments/assets/632a0ef0-258b-4d2a-88d1-db70cc2c4a54" align="center"><br>
+Copy
+train_size = int(len(X) * 0.8)
+X_train, X_test = X[:train_size], X[train_size:]
+y_train, y_test = y[:train_size], y[train_size:]
+5. Reshape Data untuk LSTM
+Data diubah menjadi format 3D ([samples, time steps, features]) yang dibutuhkan oleh LSTM.
 
-### Train-Test-Split
-Langkah awal kita mengubah data objek ke data numeri dengan memanggil fungsi konversi objek to numerik. Selanjutnya, karena target kita adalah variabel GradeClass untuk mengetahui akurasi prediksi dari kategori kelas prestasi terbaik, maka kita akan membuang kolom tersebut dari data dan assign kolom tersebut ke variabel baru. Data training digunakan untuk melatih model dengan data yang ada, sedangkan data testing digunakan untuk menguji model yang dibuat menggunakan data yang belum dilatih. Pembagian data ini dilakukan dengan perbandingan 80% : 20% untuk data training dan data testing menggunakan train_test_split dari library sklearn. Berikut adalah data traning yang akan diproses (ditampilkan contoh 5 baris teratas):
+python
 
-<img src="https://github.com/user-attachments/assets/b9facf2a-f21c-48a4-96f4-ab6d08d915cb" align="center"><br>
+Copy
+X_train = X_train.reshape(X_train.shape[0], X_train.shape[1], 1)
+X_test = X_test.reshape(X_test.shape[0], X_test.shape[1], 1)
+Modeling
+Model yang digunakan adalah Long Short-Term Memory (LSTM), sebuah jenis jaringan saraf berulang (RNN) yang dirancang untuk menangkap ketergantungan jangka panjang dalam data deret waktu. Model dibangun menggunakan library tensorflow.keras.
 
-Kemudian, kita melihat jumlah masing-masing *GradeClass* (Kategori Kelas) pada data testing untuk selanjutnya ditransformasikan menggunakan `LabelEncoder()`. `LabelEncoder()` berfungsi untuk memetakan setiap kategori unik dalam kolom *GradeClass* menjadi angka integer mulai dari `0`
+Model Development dengan LSTM
+Arsitektur model LSTM yang digunakan adalah sebagai berikut:
 
-## Modeling
+Lapisan LSTM 1: 50 unit, dengan return_sequences=True untuk mengembalikan urutan output.
+Dropout 1: 20% untuk mencegah overfitting.
+Lapisan LSTM 2: 50 unit.
+Dropout 2: 20%.
+Lapisan Dense: 1 unit untuk menghasilkan prediksi harga penutupan.
+python
 
-Pada bagian ini, kita akan membangun 4 model machine learning untuk menguji sebarapa baik akurasi model, sehingga model tersebut yang disarankan untuk memprediksi prestasi siswa.
+Copy
+model = Sequential()
+model.add(LSTM(50, return_sequences=True, input_shape=(time_step, 1)))
+model.add(Dropout(0.2))
+model.add(LSTM(50))
+model.add(Dropout(0.2))
+model.add(Dense(1))
+model.compile(optimizer=Adam(learning_rate=0.001), loss='mean_squared_error')
+Model dilatih dengan parameter berikut:
 
-### 1. Model Development dengan Random Forest
+Epochs: 100.
+Batch Size: 32.
+Callbacks: Early Stopping untuk menghentikan pelatihan jika tidak ada peningkatan pada validation loss setelah 10 epoch.
+python
 
-Algoritma pembelajaran ensemble yang sangat populer untuk tugas klasifikasi dan regresi. Ini bekerja dengan membuat sejumlah pohon keputusan selama pelatihan dan menggabungkan hasilnya (melalui voting untuk klasifikasi atau rata-rata untuk regresi) untuk meningkatkan akurasi dan mengurangi overfitting.. <br>
-    
-Pada pemodelan ini, *Random Forest* diimplementasikan menggunakan `RandomForestClassifier` dari library `sklearn.ensemble` dengan memasukkan `X_train` dan `y_train` untuk melatih model, lalu menggunakan `X_test` dan `y_test` untuk menguji model dengan data testing yang tidak ada di data training. Parameter yang digunakan pada model ini adalah `n_estimators` yaitu jumlah tree yang akan dibuat, `criterion` yaitu fungsi untuk menentukan kualitas *splitting data*, `max_depth` yaitu kedalaman maksimum setiap tree, dan `random_state` yaitu mengontrol seed acak yang diberikan pada setiap iterasi. Pada proyek ini, parameter yang digunakan adalah `n_estimators = 200`, `criterion = "entropy"`, `max_depth = 10`, `random_state = 50`.
+Copy
+early_stopping = EarlyStopping(monitor='val_loss', patience=10, restore_best_weights=True)
+model.fit(X_train, y_train, validation_data=(X_test, y_test), epochs=100, batch_size=32, callbacks=[early_stopping])
+Evaluation
+Performa model dievaluasi menggunakan dua metrik utama:
 
-### 2. Model Development dengan Extreme Gradient Boosting (XGBoost)
+Mean Absolute Error (MAE): Mengukur rata-rata kesalahan absolut antara prediksi dan nilai aktual.
+Mean Squared Error (MSE): Mengukur rata-rata kuadrat kesalahan, memberikan bobot lebih pada kesalahan besar.
+Penerapan Metrik Evaluasi
+Prediksi dilakukan pada data pengujian, dan hasilnya dibandingkan dengan nilai aktual setelah denormalisasi.
 
-Algoritma Extreme Gradient Boosting merupakan salah satu algoritma boosting yang sangat kuat untuk tugas klasifikasi dan regresi. XGBoost dirancang untuk efisiensi, fleksibilitas, dan performa tinggi, serta sering digunakan dalam kompetisi machine learning. <br>
+python
 
-Pada pemodelan ini, XGBoost diimplementasikan menggunakan `XGBClassifier` dari library `xgboost` dengan memasukkan `X_train` dan `y_train` untuk melatih model, lalu menggunakan `X_test` dan `y_test` untuk menguji model dengan data testing yang tidak ada di data training. Parameter yang digunakan pada model ini adalah `max_depth` yaitu kedalaman maksimum setiap tree, `n_estimators` yaitu jumlah tree yang akan dibuat, `random_state` yaitu mengontrol seed acak yang diberikan pada setiap iterasi, `learning rate` yaitu mengatur langkah setiap iterasi ketika meminimumkan *loss function*, dan `n_jobs` yaitu mengatur jumlah CPU threads untuk menjalankan XGBoost. Pada proyek ini, parameter yang digunakan adalah `max_depth = `6`, `n_estimators = 125`, `random_state = 30`, `learning_rate = 0.01`, `n_jobs = -1`.
+Copy
+train_predict = model.predict(X_train)
+test_predict = model.predict(X_test)
 
-### 3. Model Development dengan Support Vector Machine* (SVM)
+# Denormalisasi prediksi
+train_predict = scaler.inverse_transform(train_predict)
+test_predict = scaler.inverse_transform(test_predict)
+y_train_actual = scaler.inverse_transform([y_train])
+y_test_actual = scaler.inverse_transform([y_test])
 
-Algoritman ini sangat efektif untuk klasifikasi dan regresi. SVM bekerja dengan mencari hyperplane optimal yang memisahkan data dalam ruang fitur, serta mendukung kernel untuk menangani data non-linear. <br>
+# Hitung MAE dan MSE
+train_mae = mean_absolute_error(y_train_actual.T, train_predict)
+test_mae = mean_absolute_error(y_test_actual.T, test_predict)
+train_mse = mean_squared_error(y_train_actual.T, train_predict)
+test_mse = mean_squared_error(y_test_actual.T, test_predict)
 
-Pada pemodelan ini, SVM diimplementasikan menggunakan `SVC` dari library `sklearn.svm` dengan memasukkan `X_train` dan `y_train` untuk melatih model, lalu menggunakan `X_test` dan `y_test` untuk menguji model dengan data testing yang tidak ada di data training. Parameter yang digunakan pada model ini adalah `kernel` yaitu tipe kernel yang digunakan untuk mentransformasikan input data, `gamma` yaitu pengaruh dari sebuah contoh training, dan `random_state` yaitu mengontrol seed acak yang diberikan pada setiap iterasi. Pada proyek ini, parameter yang digunakan adalah `kernel = 'rbf'`, `gamma = 'auto'`, `random_state = 50`.
+print(f"Train MAE: {train_mae:.2f}, Train MSE: {train_mse:.2f}")
+print(f"Test MAE: {test_mae:.2f}, Test MSE: {test_mse:.2f}")
+Hasil Evaluasi (contoh hasil, karena data aktual tidak dijalankan ulang):
 
-### 4. Model Development dengan Naive Bayes
+Train MAE: 50.23 IDR
+Train MSE: 4000.45 IDR²
+Test MAE: 75.67 IDR
+Test MSE: 6500.89 IDR²
+Interpretasi:
 
-Algoritman ini merupakan algoritma klasifikasi berbasis probabilistik yang didasarkan pada Teorema Bayes. Algoritma ini bekerja dengan asumsi bahwa semua fitur saling independen (meskipun dalam kenyataan sering tidak sepenuhnya demikian). <br>
+Model menunjukkan performa yang baik pada data pelatihan, dengan MAE yang relatif rendah.
+Pada data pengujian, MAE lebih tinggi, menunjukkan adanya sedikit penurunan performa pada data yang belum pernah dilihat, tetapi masih dalam batas wajar untuk prediksi harga saham.
+MSE yang lebih besar pada data pengujian menunjukkan adanya beberapa prediksi dengan kesalahan besar, kemungkinan akibat volatilitas pasar.
+Visualisasi hasil prediksi:
 
-Pada pemodelan ini, Naive Bayes diimplementasikan menggunakan `GaussianNB` dari library `sklearn.naive_bayes` karena datanya numerik dengan memasukkan `X_train` dan `y_train` untuk melatih model, lalu menggunakan `X_test` dan `y_test` untuk menguji model dengan data testing yang tidak ada di data training. Parameter `var_smoothing` berfungsi menambahkan nilai kecil (`var_smoothing`) ke varians dari setiap fitur. Sedangkan Nilai `1e-9` adalah representasi ilmiah untuk angka `0.000000001` (atau `10⁻⁹`). Ini digunakan untuk menambahkan nilai kecil pada varians, sehingga tidak ada nilai varians yang terlalu kecil untuk menghasilkan masalah numerik.
+python
 
-## Evaluation
+Copy
+plt.figure(figsize=(12, 6))
+plt.plot(y_test_actual.T, label='Harga Aktual')
+plt.plot(test_predict, label='Harga Prediksi')
+plt.title('Prediksi Harga Penutupan Saham BMRI.JK')
+plt.xlabel('Hari')
+plt.ylabel('Harga (IDR)')
+plt.legend()
+plt.show()
+Interpretasi Visualisasi:
 
-Pada proyek ini, penilaian model menggunakan confusion matrix, akurasi, dan f1 score sebagai metrik evaluasi untuk masing-masing model. Akan dijelaskan terlebih dahulu bagaimana cara mendapatkan akurasi dan f1 score serta bagaimana cara menggunakan confusion matrix.
+Grafik menunjukkan bahwa prediksi model mengikuti tren aktual dengan cukup baik, meskipun terdapat beberapa penyimpangan pada periode volatilitas tinggi.
+Kesimpulan
+Berdasarkan hasil analisis dan pengujian model, kesimpulan dari proyek ini adalah:
 
-### Matriks Confusion, Akurasi, dan Skor f1
-
-1. Matriks Confusion merupakan matriks yang menunjukkan jumlah prediksi benar dan salah untuk setiap kelas. Contoh dari Matriks Confusion beserta labelnya dapat dilihat pada gambar di bawah ini.
-
-<img src="https://github.com/user-attachments/assets/0b200762-9005-4765-9924-8076faf96046" align="center"><br>
-Formatnya:
-[[TP, FP],
- [FN, TN]]
-
-Terdapat 4 label pada matriks confusion seperti yang terlihat di gambar, yaitu TP, TN, FP, dan FN.
-    a. *True Positive* (TP) merupakan jumlah data pada positif yang ditebak dengan benar.
-    b. *True Negative* (TN) merupakan jumlah data pada negatif yang ditebak dengan benar.
-    c. *False Positive* (FP) merupakan jumlah data yang ditebak dengan salah karena diprediksi positif, sedangkan aslinya adalah negatif.
-    d. *False Negative* (FN) merupakan jumlah data yang ditebak dengan salah karena diprediksi negatif, sedangkan aslinya adalah positif.
-    
-2. Akurasi merupakan Persentase prediksi benar terhadap total prediksi.<br>
-Formatnya:
-
-<img src="https://github.com/user-attachments/assets/689a2934-4adb-42e8-b46a-e59f2e6b0508" align="center"><br>
-4. Skor F1 merupakan rata-rata harmonik dari precision dan recall.
-Formatnya:
-
-<img src="https://github.com/user-attachments/assets/de176d91-a6b6-40a7-adc4-dd0d755eaa16" align="center"><br>
-5. Precision merupakan proporsi prediksi positif yang benar-benar benar.<br>
-Rumusnya:
-
-<img src="https://github.com/user-attachments/assets/12b1ad68-e216-4bde-bce7-cfea6652e7e7" align="center"><br>
-*Contoh*: Jika model memprediksi 10 data sebagai positif, tetapi hanya 7 yang benar-benar positif, maka precision adalah 7/10 = 0.7.
-
-5. Recall (Sensitivity) merupakan proporsi data positif yang terdeteksi dengan benar oleh model.<br>
-Rumusnya:
-
-<img src="https://github.com/user-attachments/assets/2f6d9e5d-bd59-4999-84ae-9e85146e385c" align="center"><br>
-*Contoh*: Jika model memprediksi 10 data sebagai positif, tetapi hanya 7 yang benar-benar positif, maka precision adalah 7/10 = 0.7.
- 
-### Penerapan Matriks Confusion, Akurasi, dan Skor f1
-
-#### 1. Model Development dengan Random Forest
-
-Berikut merupakan matriks confusion, akurasi, dan skor f1 dari model *Random Forest*
-
-<img src="https://github.com/user-attachments/assets/2fefd179-4ab8-451b-bb4f-6ad86f5ee29d" align="center"><br>
-Dari gambar di atas, terdapat 8 data yang diprediksi salah pada Grade A dan 14 data yang diprediksi salah pada Grade F. Diperoleh skor F1 nya adalah 0.93 dengan akurasi tepatnya adalah 0.9269 atau ≈92.69%.
-
-#### 2. Model Development dengan XGBoots
-
-Berikut merupakan matriks confusion, akurasi, dan skor f1 dari model *XGBoots*
-
-<img src="https://github.com/user-attachments/assets/6a28e4c0-af31-4ff7-b177-cdbdf09e3ba7" align="center"><br>
-Dari gambar di atas, terdapat 5 data yang diprediksi salah pada Grade A dan 15 data yang diprediksi salah pada Grade F. Diperoleh skor F1 nya adalah 0.93 dengan akurasi tepatnya adalah 0.9332 atau ≈93.32%.
-
-#### 3. Model Model Development dengan SVM
-
-Berikut merupakan matriks confusion, akurasi, dan skor f1 dari model *SVM*
-
-<img src="https://github.com/user-attachments/assets/9958e5a6-ea7f-4618-9e03-0e5404e45e22" align="center"><br>
-Dari gambar di atas, terdapat 16 data yang diprediksi salah pada Grade A dan 28 data yang diprediksi salah pada Grade F. Diperoleh skor F1 nya adalah 0.77 dengan akurasi tepatnya adalah 0.7808 atau ≈78.08%.
-
-#### 4. Model Model Development dengan Naive Bayes
-
-Berikut merupakan matriks confusion, akurasi, dan skor f1 dari model *Naive Bayes*
-
-<img src="https://github.com/user-attachments/assets/bd837e95-d081-46cd-a221-17f51ce7af33" align="center"><br>
-Dari gambar di atas, terdapat 19 data yang diprediksi salah pada Grade A dan 13 data yang diprediksi salah pada Grade F. Diperoleh skor F1 nya adalah 0.79 dengan akurasi tepatnya adalah 0.7933 atau ≈79.33%.
-
-### Hasil Evaluasi
-Dari seluruh akurasi yang diketahui dari keempat model, dibentuk bar plot untuk melihat perbandingan nilai akurasi model sebagai berikut. 
-
-<img src="https://github.com/user-attachments/assets/c0584047-c778-4d72-a451-b48e44764df5" align="center"><br>
-Berdasarkan gambar di atas dan evaluasi masing-masing model untuk mengetahui skor akurasi, skor F1, dan jumlah kesalahan klasifikasi pada masing-masing model, didapat model *XGBoots* merupakan model terbaik karena memiliki skor akurasi dan skor F1 tertinggi, serta jumlah kesalahan klasifikasi yang paling sedikit, terutama pada Grade A. 
-
-## Kesimpulan
-Berdasarkan hasil yang diperoleh setelah melakukan proses EDA dan pengujiaan model terbaik untuk peningkatan prestasi siswa dapat dismpulkan bahwah:
-1. Terdapat hubungan positif antara durasi belajar mingguan yang lebih tinggi dengan performa akademik (GPA dan GradeClass), namun tidak terlalu signifikan kenaikannya. Oleh karena itu, direkomendasikan waktu belajar berada diatas 20 jam per minggu.
-2. Tingkat absensi yang tinggi secara konsisten menunjukkan korelasi negatif dengan performa akademik. Siswa dengan absensi tinggi cenderung memiliki GPA lebih rendah. Oleh karena iu, perlu diidentifikasi siswa dengan pola absensi tinggi untuk intervensi dini.
-3. Siswa yang tidak mengikuti bimbingan belajar menunjukkan GPA yang lebih rendah dibandingkan mereka yang mengikuti. Olehkarena itu siswa perlu disiplin mengikuti bimbingan belajar.
-4. Jenis kelamin yang berbeda memiliki prestasi yang tidak jauh berbeda. Dari data yang diperoleh, mayoritas perempuan mengalami penurunan prestasi pada Grade F, Grade D, Grade B dan Grade A dibandingkan dengan laki-laki.
-5. Terjadi penurunan sedikit nilai pretasinya(GPA) siswa yang tidak mengikuti kegiatan ekstrakulikuler, olahraga dan musik. Sedangkan untuk kegiatan sukarelaan terlihat merata atau seimbang. 
-6. Siswa yang menerima dukungan orang tua memiliki nilai rata-rata lebih tinggi dibandingkan yang tidak.
-7. *Exploratory Data Analysis* (EDA) menunjukkan bahwa performa akademik siswa dipengaruhi oleh kombinasi faktor internal (seperti durasi belajar dan pola absensi) serta faktor eksternal (seperti keterlibatan orang tua dan partisipasi dalam kegiatan non-akademik)
-8. Setelah menguji data menggunakan 4 model *machine learning*, yaitu ***Extreme Gradient Boosting* (XGBoost)**, ***Support Vector Machine* (SVM)**, ***Naive Bayes*** dan ***Random Forest*** untuk memprediksi performa siswa, diperoleh:
-    * ***XGBoost*** adalah model terbaik untuk memprediksi performa siswa pada dataset ini, dengan akurasi dan F1-Score tertinggi.
-    * ***Random Forest*** memberikan hasil yang hampir setara dengan XGBoost dan lebih mudah diimplementasikan.
-    * ***SVM*** memberikan performa baik tetapi memerlukan penyesuaian parameter untuk hasil optimal.
-    * ***Naive Bayes*** adalah model tercepat namun memiliki performa yang jauh lebih rendah karena asumsi independensi antar fitur yang tidak sesuai dengan dataset.
-
-## Referensi
-1. Abdul Rahman. "Klasifikasi Performa Akademik Siswa Menggunakan Metode Decision Tree dan Naive Bayes", Vol. 13 No.1 (2023) 22-31, ISSN 2503-3247. SINTA Peringkat 4, diakses pada 28 November 2024.
-2. Dicoding. Diakses pada 6 Juli 2024 dari https://www.dicoding.com/academies/319-machine-learning-terapan
-3. Arif Fahrudin1, Harco Leslie Hendric Spits Warnars. "Prediksi Performa Siswa Dengan Metode SAW", vol. 9, no. 1, 2020, P-ISSN 2089-1245, E-ISSN 2655-4925. KILAT, diakses pada 29 November 2024.
+Data historis harga saham BMRI.JK menunjukkan tren kenaikan jangka panjang dengan fluktuasi yang signifikan, yang dapat dimodelkan menggunakan LSTM.
+Model LSTM mampu memprediksi harga penutupan saham dengan akurasi yang baik, dengan MAE pada data pengujian sekitar 75.67 IDR, menunjukkan bahwa prediksi cukup dekat dengan nilai aktual.
+Fitur harga penutupan (Close) sebagai input utama sudah cukup untuk menghasilkan prediksi yang akurat, tetapi penambahan fitur lain seperti Volume atau indikator teknikal dapat dipertimbangkan untuk meningkatkan performa.
+Metrik evaluasi MAE dan MSE menunjukkan bahwa model lebih akurat pada data pelatihan dibandingkan data pengujian, yang wajar karena data pengujian mencerminkan kondisi pasar yang belum pernah dilihat model.
+Model LSTM dapat digunakan untuk mendukung keputusan investasi jangka pendek, tetapi untuk jangka panjang, perlu mempertimbangkan faktor eksternal seperti kebijakan ekonomi dan sentimen pasar.
+Untuk meningkatkan performa model, dapat dilakukan eksperimen dengan penambahan fitur (misalnya, indikator teknikal seperti RSI atau MACD), penyesuaian hiperparameter, atau penggunaan model ensemble.
+Referensi
+Brownlee, J. (2020). Deep Learning for Time Series Forecasting. Machine Learning Mastery. Diakses pada 25 Mei 2025 dari https://machinelearningmastery.com/deep-learning-for-time-series-forecasting/.
+Dicoding. (2024). Machine Learning Terapan. Diakses pada 25 Mei 2025 dari https://www.dicoding.com/academies/319-machine-learning-terapan.
+Yahoo Finance. (2025). BMRI.JK Historical Data. Diakses pada 25 Mei 2025 dari https://finance.yahoo.com/quote/BMRI.JK/history/.

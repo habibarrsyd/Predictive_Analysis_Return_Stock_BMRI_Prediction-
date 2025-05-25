@@ -35,41 +35,34 @@ Mengoptimalkan model dengan Early Stopping dan penyesuaian hiperparameter untuk 
 
 ## Data Understanding
 Dataset yang digunakan dalam proyek ini diambil dari Yahoo Finance menggunakan library yfinance dengan kode saham BMRI.JK. Data mencakup periode dari 1 Januari 2015 hingga 25 Mei 2025, berisi informasi harga saham harian yang terdiri dari 2563 baris dan 5 kolom: Close, High, Low, Open, dan Volume. Dataset ini bersifat deret waktu (time series) dan berisi data numerik tanpa nilai kategorikal.
+#### Tipe Data
+<img src="img/tipe_data_predictiveanalysisi.jpg" align="center"><br>
+#### Bentuk Data
+<img src="img/shape_data_predictiveanalysis.jpg" align="center"><br>
 
 Deskripsi Variabel
 Dataset memiliki 5 variabel dengan keterangan sebagai berikut:
 
 
-Variabel	Keterangan
-Open	Harga pembukaan saham pada hari perdagangan (dalam IDR).
-High	Harga tertinggi saham pada hari perdagangan (dalam IDR).
-Low	Harga terendah saham pada hari perdagangan (dalam IDR).
-Close	Harga penutupan saham pada hari perdagangan (dalam IDR, variabel target).
-Volume	Jumlah saham yang diperdagangkan pada hari tersebut.
-Menangani Missing Value dan Duplicate Data
-Pada tahap ini, dataset diperiksa untuk memastikan tidak ada nilai yang hilang (missing values) atau data duplikat. Berdasarkan analisis awal:
+Variabel  |	Keterangan
+-----------|------------
+Open  |	Harga pembukaan saham pada hari perdagangan (dalam IDR).
+High  |	Harga tertinggi saham pada hari perdagangan (dalam IDR).
+Low  |	Harga terendah saham pada hari perdagangan (dalam IDR).
+Close  |	Harga penutupan saham pada hari perdagangan (dalam IDR, variabel target).
+Volume  |	Jumlah saham yang diperdagangkan pada hari tersebut.
 
+### Menangani Missing Value dan Duplicate Data
+Pada tahap ini, dataset diperiksa untuk memastikan tidak ada nilai yang hilang (missing values) Berdasarkan analisis awal:
+<img src="img/null_data_predictiveanalysis.jpg" align="center"><br>
 Tidak ada nilai yang hilang pada dataset (dikonfirmasi dengan data.isnull().sum()).
-Tidak ada data duplikat (dikonfirmasi dengan data.duplicated().sum()). Dengan demikian, dataset siap untuk tahap analisis dan pemrosesan lebih lanjut.
-Univariate Analysis EDA
-Analisis univariat dilakukan untuk memahami distribusi dan karakteristik masing-masing variabel:
+Tidak dilakukannya penghapusan nilai duplikat dikarenakan informasinya tetap berguna selama predictive modeling berbasis time series.
 
-Harga Penutupan (Close): Harga penutupan menunjukkan tren kenaikan dari sekitar 1641 IDR pada 2015 hingga 5425 IDR pada Mei 2025, dengan fluktuasi yang signifikan.
-Harga Tertinggi (High) dan Terendah (Low): Kedua variabel ini berkorelasi erat dengan harga penutupan, menunjukkan volatilitas harian.
-Harga Pembukaan (Open): Mirip dengan harga penutupan, harga pembukaan juga menunjukkan tren kenaikan jangka panjang.
-Volume: Volume perdagangan bervariasi, dengan puncak tertinggi pada periode tertentu (misalnya, 191 juta saham pada 19 Mei 2025), menunjukkan aktivitas pasar yang tinggi pada hari-hari tertentu.
+### Visualisasi Data EDA
+
 Visualisasi data dilakukan menggunakan library matplotlib untuk melihat tren harga penutupan:
+<img src="img/graph_data_predictiveanalysis.jpg"><br>
 
-python
-
-Copy
-plt.figure(figsize=(12, 6))
-plt.plot(data['Close'], label='Harga Penutupan')
-plt.title('Tren Harga Penutupan Saham BMRI.JK (2015-2025)')
-plt.xlabel('Tanggal')
-plt.ylabel('Harga (IDR)')
-plt.legend()
-plt.show()
 Interpretasi:
 
 Harga penutupan menunjukkan tren kenaikan jangka panjang dengan beberapa periode volatilitas, terutama pada 2020 (kemungkinan akibat pandemi COVID-19).
@@ -77,147 +70,82 @@ Tidak ada outlier ekstrem yang terdeteksi dalam data harga.
 Multivariate Analysis EDA
 Analisis multivariat dilakukan untuk memahami hubungan antar variabel:
 
-Korelasi Antar Fitur:
-Menggunakan heatmap korelasi (data.corr()), ditemukan bahwa Close, Open, High, dan Low memiliki korelasi positif yang sangat kuat (>0.99), menunjukkan bahwa fitur-fitur ini bergerak searah.
-Volume memiliki korelasi yang lebih lemah dengan harga, menunjukkan bahwa volume tidak selalu menjadi prediktor kuat untuk harga saham.
-Scatter Plot:
-Scatter plot antara Close dan Volume menunjukkan tidak ada pola linier yang jelas, mengindikasikan bahwa volume perdagangan tidak secara langsung memengaruhi harga penutupan.
-Interpretasi:
+## Data Preparation
+### Feature Engineering:
+1. MA7, M30
+MA7 dan MA30 membantu model mengenali tren jangka pendek dan panjang, 
+2. RSI
+RSI mengidentifikasi kondisi overbought/oversold untuk prediksi pembalikan harga
+4. Volatility
+Volatilitas memberikan informasi tentang fluktuasi pasar, sehingga model dapat lebih memahami dinamika pasar dan menghasilkan prediksi yang lebih akurat serta relevan dengan logika analisis saham.
+6. Return
+Memberikan informasi tentang persentase kenaikan atau penurunan harga penutupan dari satu hari ke hari berikutnya
 
-Fitur harga (Open, High, Low) sangat berkorelasi dengan Close, sehingga dapat digunakan sebagai input utama untuk model LSTM.
-Volume dapat digunakan sebagai fitur tambahan, tetapi pengaruhnya mungkin terbatas.
-Data Preparation
-Pada tahap ini, data diproses agar sesuai untuk pelatihan model LSTM. Langkah-langkah yang dilakukan meliputi:
+Data yang terbentuk : 
+<img src="img/data_after_fenginering_predictiveanalysis.jpg"><br>
 
-1. Pemilihan Fitur
-Fitur yang digunakan untuk prediksi adalah Close, dengan fokus pada harga penutupan sebagai variabel target. Fitur lain (Open, High, Low, Volume) dapat digunakan sebagai input tambahan dalam eksperimen lanjutan, tetapi pada proyek ini hanya Close yang digunakan untuk simplifikasi.
+Karena masih terdapat nilai null, maka dilakukan pembersihan nilai null pada data kemudian dilakukan penyederhanaan nama kolom agar mudah diidentifikasikan ketika menjadi fitur <br>
+Penamaan kolom sebelum disederhanakan <br>
+<img src="img/col_befr_predictvieanalyusis.jpg"><br>
+Penamaan kolom setelah disederhanakan <br>
+<img src="img/col_aftr_predctivalnisis.jpg"><br>
+Sebelum dimasukkan pemodelan dilakukan kembali pemrosesan seperti berikut : 
+```
+numeric_columns = [
+    'Open_BMRI.JK', 'High_BMRI.JK', 'Low_BMRI.JK', 'Close_BMRI.JK', 
+    'Volume_BMRI.JK', 'MA7', 'MA30', 'RSI', 'Volatility', 'IHSG_Close'
+]
 
-2. Normalisasi Data
-Data harga penutupan dinormalisasi menggunakan MinMaxScaler untuk mengubah nilai ke rentang [0, 1], yang sesuai dengan kebutuhan model LSTM.
+# Kolom target
+target = 'Return'
 
-python
+# Normalisasi fitur
+feature_scaler = MinMaxScaler()
+data[numeric_columns] = feature_scaler.fit_transform(data[numeric_columns])
 
-Copy
-scaler = MinMaxScaler(feature_range=(0, 1))
-scaled_data = scaler.fit_transform(data['Close'].values.reshape(-1, 1))
-3. Pembuatan Data Deret Waktu
-Data diubah menjadi format deret waktu dengan jendela waktu (time step) sebanyak 60 hari untuk memprediksi harga pada hari berikutnya. Proses ini dilakukan dengan membuat pasangan input-output sebagai berikut:
+# Normalisasi target (Return) secara terpisah
+target_scaler = MinMaxScaler()
+data['Scaled_Return'] = target_scaler.fit_transform(data[[target]])
 
-Input: Harga penutupan selama 60 hari sebelumnya.
-Output: Harga penutupan pada hari berikutnya.
-python
+# One-hot encoding untuk kolom kategorikal
+data = pd.get_dummies(data, columns=['Day_of_Week', 'Month'], prefix=['Day', 'Month'])
 
-Copy
-def create_dataset(dataset, time_step=60):
-    X, y = [], []
-    for i in range(len(dataset) - time_step - 1):
-        X.append(dataset[i:(i + time_step), 0])
-        y.append(dataset[i + time_step, 0])
-    return np.array(X), np.array(y)
+# Hapus baris dengan nilai NaN (akibat feature engineering atau shift)
+data = data.dropna()
 
-time_step = 60
-X, y = create_dataset(scaled_data, time_step)
-4. Train-Test Split
-Data dibagi menjadi 80% data pelatihan dan 20% data pengujian menggunakan pembagian berurutan (tidak acak, karena data deret waktu).
+# Tampilkan kolom untuk memastikan
+print("Kolom setelah normalisasi dan encoding:", data.columns.tolist())
+```
 
-python
+Dilakukan pra-pemrosesan data untuk proyek prediksi harga saham BMRI.JK dengan model LSTM, dengan langkah-langkah berikut: 
+1. Mendefinisikan kolom numerik seperti Open_BMRI.JK, Close_BMRI.JK, MA7, RSI, dan IHSG_Close untuk dinormalisasi menggunakan MinMaxScaler agar nilainya berada dalam rentang [0,1], sehingga model dapat belajar lebih baik dengan skala yang konsisten
+2. Menormalisasi kolom target Return secara terpisah menggunakan scaler berbeda untuk menjaga integritas data target;
+3. Menerapkan one-hot encoding pada kolom kategorikal Day_of_Week dan Month untuk mengubah data kategorikal menjadi format numerik yang dapat diproses oleh model;
+4. Menghapus baris dengan nilai NaN yang muncul akibat feature engineering (seperti MA30 atau shift pada Return);
+5. Menampilkan daftar kolom untuk memastikan transformasi berhasil.
 
-Copy
-train_size = int(len(X) * 0.8)
-X_train, X_test = X[:train_size], X[train_size:]
-y_train, y_test = y[:train_size], y[train_size:]
-5. Reshape Data untuk LSTM
-Data diubah menjadi format 3D ([samples, time steps, features]) yang dibutuhkan oleh LSTM.
+Kemudian dilakukan konversi false dan true menjadi bentuk boolean agar dapat diproses oleh sistem
+```
+# Asumsi 'data' adalah DataFrame setelah one-hot encoding
+# Identifikasi kolom boolean (Day_* dan Month_*)
+boolean_columns = [col for col in data.columns if col.startswith('Day_') or col.startswith('Month_')]
 
-python
+# Ubah False/True menjadi 0/1
+for col in boolean_columns:  # Perbaikan: ganti 'boolean Benutzercolumns' menjadi 'boolean_columns'
+    data[col] = data[col].astype(int)
 
-Copy
-X_train = X_train.reshape(X_train.shape[0], X_train.shape[1], 1)
-X_test = X_test.reshape(X_test.shape[0], X_test.shape[1], 1)
-Modeling
-Model yang digunakan adalah Long Short-Term Memory (LSTM), sebuah jenis jaringan saraf berulang (RNN) yang dirancang untuk menangkap ketergantungan jangka panjang dalam data deret waktu. Model dibangun menggunakan library tensorflow.keras.
+# Verifikasi perubahan
+print("Tipe data setelah konversi:")
+print(data[boolean_columns].dtypes)
+print("\nContoh data setelah konversi:")
+print(data[boolean_columns].head())
+```
+Didapatkan hasil sebagai berikut : <br> 
+<img src="img/boolean_predictvanalysis.jpg"><br>
 
-Model Development dengan LSTM
-Arsitektur model LSTM yang digunakan adalah sebagai berikut:
+## Pemodelan
+### Arsitektur LSTM pengujian pertama
 
-Lapisan LSTM 1: 50 unit, dengan return_sequences=True untuk mengembalikan urutan output.
-Dropout 1: 20% untuk mencegah overfitting.
-Lapisan LSTM 2: 50 unit.
-Dropout 2: 20%.
-Lapisan Dense: 1 unit untuk menghasilkan prediksi harga penutupan.
-python
-
-Copy
-model = Sequential()
-model.add(LSTM(50, return_sequences=True, input_shape=(time_step, 1)))
-model.add(Dropout(0.2))
-model.add(LSTM(50))
-model.add(Dropout(0.2))
-model.add(Dense(1))
-model.compile(optimizer=Adam(learning_rate=0.001), loss='mean_squared_error')
-Model dilatih dengan parameter berikut:
-
-Epochs: 100.
-Batch Size: 32.
-Callbacks: Early Stopping untuk menghentikan pelatihan jika tidak ada peningkatan pada validation loss setelah 10 epoch.
-python
-
-Copy
-early_stopping = EarlyStopping(monitor='val_loss', patience=10, restore_best_weights=True)
-model.fit(X_train, y_train, validation_data=(X_test, y_test), epochs=100, batch_size=32, callbacks=[early_stopping])
-Evaluation
-Performa model dievaluasi menggunakan dua metrik utama:
-
-Mean Absolute Error (MAE): Mengukur rata-rata kesalahan absolut antara prediksi dan nilai aktual.
-Mean Squared Error (MSE): Mengukur rata-rata kuadrat kesalahan, memberikan bobot lebih pada kesalahan besar.
-Penerapan Metrik Evaluasi
-Prediksi dilakukan pada data pengujian, dan hasilnya dibandingkan dengan nilai aktual setelah denormalisasi.
-
-python
-
-Copy
-train_predict = model.predict(X_train)
-test_predict = model.predict(X_test)
-
-# Denormalisasi prediksi
-train_predict = scaler.inverse_transform(train_predict)
-test_predict = scaler.inverse_transform(test_predict)
-y_train_actual = scaler.inverse_transform([y_train])
-y_test_actual = scaler.inverse_transform([y_test])
-
-# Hitung MAE dan MSE
-train_mae = mean_absolute_error(y_train_actual.T, train_predict)
-test_mae = mean_absolute_error(y_test_actual.T, test_predict)
-train_mse = mean_squared_error(y_train_actual.T, train_predict)
-test_mse = mean_squared_error(y_test_actual.T, test_predict)
-
-print(f"Train MAE: {train_mae:.2f}, Train MSE: {train_mse:.2f}")
-print(f"Test MAE: {test_mae:.2f}, Test MSE: {test_mse:.2f}")
-Hasil Evaluasi (contoh hasil, karena data aktual tidak dijalankan ulang):
-
-Train MAE: 50.23 IDR
-Train MSE: 4000.45 IDR²
-Test MAE: 75.67 IDR
-Test MSE: 6500.89 IDR²
-Interpretasi:
-
-Model menunjukkan performa yang baik pada data pelatihan, dengan MAE yang relatif rendah.
-Pada data pengujian, MAE lebih tinggi, menunjukkan adanya sedikit penurunan performa pada data yang belum pernah dilihat, tetapi masih dalam batas wajar untuk prediksi harga saham.
-MSE yang lebih besar pada data pengujian menunjukkan adanya beberapa prediksi dengan kesalahan besar, kemungkinan akibat volatilitas pasar.
-Visualisasi hasil prediksi:
-
-python
-
-Copy
-plt.figure(figsize=(12, 6))
-plt.plot(y_test_actual.T, label='Harga Aktual')
-plt.plot(test_predict, label='Harga Prediksi')
-plt.title('Prediksi Harga Penutupan Saham BMRI.JK')
-plt.xlabel('Hari')
-plt.ylabel('Harga (IDR)')
-plt.legend()
-plt.show()
-Interpretasi Visualisasi:
 
 Grafik menunjukkan bahwa prediksi model mengikuti tren aktual dengan cukup baik, meskipun terdapat beberapa penyimpangan pada periode volatilitas tinggi.
 Kesimpulan

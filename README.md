@@ -11,20 +11,16 @@ Proyek ini bertujuan untuk membangun model prediktif menggunakan LSTM untuk memp
 ### Problem Statements
 Berdasarkan latar belakang di atas, permasalahan yang akan dibahas dalam proyek ini adalah:
 
-1. Bagaimana pola historis harga saham BMRI.JK (Close, High, Low, Open, Volume) dapat digunakan untuk memprediksi harga penutupan di masa depan?
-2. Seberapa akurat model LSTM dalam memprediksi harga penutupan saham BMRI.JK berdasarkan data historis dari 2015 hingga 2025?
-3. Faktor apa saja (dari fitur harga dan volume) yang paling berpengaruh dalam memprediksi harga penutupan saham?
-4. Bagaimana performa model LSTM dibandingkan dengan metrik evaluasi seperti Mean Absolute Error (MAE) dan Mean Squared Error (MSE)?
-5. Apakah model LSTM dapat digunakan untuk mendukung keputusan investasi jangka pendek atau jangka panjang?
+1. Seberapa akurat model LSTM dalam memprediksi harga penutupan saham BMRI.JK berdasarkan data historis dari 2015 hingga 2025?
+2. Bagaimana performa model LSTM dibandingkan dengan metrik evaluasi seperti Mean Absolute Error (MAE) dan Mean Squared Error (MSE)?
+3. Apakah model LSTM dapat digunakan untuk mendukung keputusan investasi jangka pendek atau jangka panjang?
 
 ### Goals
 Berdasarkan problem statements, tujuan proyek ini adalah:
 
-1. Mengidentifikasi pola dan tren dalam data historis harga saham BMRI.JK.
-2. Membangun model LSTM yang akurat untuk memprediksi harga penutupan saham BMRI.JK.
-3. Menentukan fitur yang paling berpengaruh terhadap prediksi harga penutupan.
-4. Mengevaluasi performa model LSTM menggunakan metrik MAE dan MSE.
-5. Menyediakan wawasan prediktif yang dapat mendukung keputusan investasi.
+1. Membangun model LSTM yang akurat untuk memprediksi harga penutupan saham BMRI.JK.
+2. Mengevaluasi performa model LSTM menggunakan metrik MAE dan MSE.
+3. Menyediakan wawasan prediktif yang dapat mendukung keputusan investasi.
 
 ### Solution Statement
 Melakukan Exploratory Data Analysis (EDA) untuk mengidentifikasi pola, tren, dan korelasi dalam data harga saham BMRI.JK.
